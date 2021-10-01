@@ -1,0 +1,36 @@
+{
+  "name": "wiz-teryx",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "dependencies": {
+    "axios": "^0.21.4",
+    "body-parser": "^1.19.0",
+    "crypto": "^1.0.1",
+    "express": "^4.17.1",
+    "got": "^11.8.2",
+    "js-file-download": "^0.4.12",
+    "nodemon": "^2.0.12",
+    "oauth-1.0a": "^2.2.6",
+    "oauth-signature": "^1.5.0",
+    "oauth1-signature": "^1.0.5",
+    "pm2": "^5.1.1",
+    "python-shell": "^3.0.0",
+    "qs": "^6.10.1",
+    "request": "^2.88.2",
+    "stream": "0.0.2",
+    "util": "^0.12.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon main.js",
+    "serv": "pm2 start main.js -i 2",
+    "pm2_version": "pm2 -v",
+    "pm2_monit": "pm2 monit",
+    "pm2_stop": "pm2 stop main"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

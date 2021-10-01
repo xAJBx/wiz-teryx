@@ -1,0 +1,11 @@
+.idea
+/wiz-teryx/secrets/secrets.js
+/wiz-teryx/node_modules/
+*~
+*.exe
+*.py
+*#*#
+*.#*
+*scratch.js
+
+!*py_hello.py
