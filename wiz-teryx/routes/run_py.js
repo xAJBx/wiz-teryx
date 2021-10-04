@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const {PythonShell} = require('python-shell')
 
+const secrets = require("../secrets/secrets")
 
 // @desc  assumption is that the py_scripts dirrectory is one dirrectory back and in "py_scripts"
 function get_py_script_dir_path(current_dir){
@@ -31,7 +32,8 @@ router.get('', (req, res) => {
     let options = {
         mode: 'text',
         pythonOptions: ['-u'], // get print results in real-time
-        scriptPath: get_py_script_dir_path(__dirname), //If you are having python_test.py script in same folder, then it's optional.
+        //scriptPath: get_py_script_dir_path(__dirname), //If you are having python_test.py script in same folder, then it's optional.
+	scriptPath: secrets.app_server_details.root + "/py_scripts/", // builds py_scripts dirrectory from project root path
         args: [args_array[0]] //An argument which can be accessed in the script using sys.argv[1]
     };
 

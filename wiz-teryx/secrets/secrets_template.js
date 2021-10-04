@@ -28,7 +28,8 @@ const alteryx_servers_details = {
 }
 
 const app_server_details = {
-    "port": ""  //place port number wiz-teryx should serv on localhost
+    "port": "",  //place port number wiz-teryx should serv on localhost
+    "root": path.dirname(__dirname)
 }
 
 
