@@ -3,6 +3,7 @@ const router = express.Router()
 const oauthSignature = require('oauth-signature')
 const axios = require('axios');
 const secrets = require("../secrets/secrets")
+const fs = require('fs')
 
 
 Gallery = function(apiLocation, apiKey, apiSecret) {
@@ -123,18 +124,41 @@ Gallery = function(apiLocation, apiKey, apiSecret) {
 		    `params= ${JSON.stringify(params)}\n`,
 		    '==================\n')
 
-	//call
+
+
+	//path to drop alteryx file currently being migrated
+	const writer = fs.createWriteStream(`${secrets.app_server_details.root}/migration_stage/file.yxzp`)
+	console.log(secrets.app_server_details.root)
+
+	
+	//axios config parameters
 	let config = {
 	    method: type,
 	    url: url,
-	    responseType: 'blob',
+	    responseType: 'stream',
 	    headers: {
 		'Authorization': `OAuth oauth_consumer_key="${params.oauth_consumer_key}",oauth_signature_method="${params.oauth_signature_method}",oauth_signature="${params.oauth_signature}",oauth_timestamp="${params.oauth_timestamp}",oauth_nonce="${params.oauth_nonce}"`
 	    }
 	};
-	
+	//make call to server and write file to stage dirrectory
 	return axios(config).then((response)=>{
-	    return response
+	    //return response
+	    return new Promise((resolve, reject) => {
+		response.data.pipe(writer);
+		let error = null;
+		writer.on('error', err => {
+		    error = err;
+		    writer.close();
+		    reject(err);
+		});
+		writer.on('close', () => {
+		    if (!error) {
+			resolve(true);
+		    }
+		    //no need to call the reject here, as it will have been called in the
+		    //'error' stream;
+		})
+	    })
 	}).catch(error => console.log(error))
     }
 
@@ -173,15 +197,8 @@ router.get('', (req, res)=> {
 	// 2. loop through arrayed return
 	ans.forEach(element => {
 	    console.log(element)
-	    admin_gallery.getDownloadMigratableWorkflows(element.id).then(ans=>{
-		// 3. post to prod server TODO...
-		try {
-		    console.log(ans)//ans.data is blob
-		    res.send('done')
-		} catch (err){
-		    console.error(err)
-		    res.send(err)
-		}
+	    admin_gallery.getDownloadMigratableWorkflows(element.id).then(response =>{
+		res.send(response.status)	
 	    }).catch(error => res.send(error))
 	})
     })
