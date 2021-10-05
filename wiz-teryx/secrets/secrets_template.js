@@ -1,5 +1,6 @@
 const alteryx_servers_details = {
     "dev": {
+	"admin_email": "", //place dev alteryx server admin email
 	"hostname": "", //place dev alteryx server hostname
 	"api_credintials": {
 	    "admin": {
@@ -13,6 +14,7 @@ const alteryx_servers_details = {
 	}
     },
     "prod": {
+	"admin_email": "", //place prod alteryx server admin email
 	"hostname": "", //place prod alteryx server hostname
 	"api_credintials": {
 	    "admin": {
@@ -29,7 +31,7 @@ const alteryx_servers_details = {
 
 const app_server_details = {
     "port": "",  //place port number wiz-teryx should serv on localhost
-    "root": path.dirname(__dirname)
+    "root": path.dirname(__dirname) //do not replace ...dynamically grab project root
 }
 
 
