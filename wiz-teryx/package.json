@@ -1,7 +1,7 @@
 {
   "name": "wiz-teryx",
   "version": "1.0.0",
-  "description": "",
+  "description": "To deploy in your enviorment follow these sequentual instructions:\r    1. Read and perform instructions on all subdirectory README.txt files\r    2. From cli root of project:\r       a. wiz-teryx> npm install\r       b. wiz-teryx> npm run dev  (to serve with nodemon)\r       c. wiz-teryx> npm run serv (to serve with pm2 cluster)",
   "main": "main.js",
   "dependencies": {
     "axios": "^0.21.4",
@@ -32,6 +32,14 @@
     "pm2_stop": "pm2 stop main"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "author": "AJB",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xAJBx/wiz-teryx.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xAJBx/wiz-teryx/issues"
+  },
+  "homepage": "https://github.com/xAJBx/wiz-teryx#readme"
 }
