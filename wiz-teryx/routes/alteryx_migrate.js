@@ -25,7 +25,6 @@ Gallery = function(apiLocation, apiKey, apiSecret) {
 	while(params.oauth_signature.includes('+') && recurce_count < 100){
 	    params.oauth_signature = generateSignature(type, url, params, this.apiSecret)
 	    recurce_count += 1
-	    //console.log(recurce_count)
 	}
 	
 	//console.log('====postRunWorkflow local vars====\n',
@@ -49,7 +48,6 @@ Gallery = function(apiLocation, apiKey, apiSecret) {
 		    return response.data
 		})
 		.catch(function (error) {
-		    //console.log(error)
 		    return error
 		});
 	}
@@ -57,7 +55,6 @@ Gallery = function(apiLocation, apiKey, apiSecret) {
     }
 
 
-    
     // @desc          queries admin alteryx REST endpoint to get an array of migratable workflow objects
     // @author        AJB
     // @created_date  2021_09_23
@@ -71,7 +68,6 @@ Gallery = function(apiLocation, apiKey, apiSecret) {
 	while(params.oauth_signature.includes('+') && recurce_count < 100){
 	    params.oauth_signature = generateSignature(type, url, params, this.apiSecret)
 	    recurce_count += 1
-	    //console.log(recurce_count)
 	}
 	
 	//console.log('====getMigratableWorkflows local vars====\n',
@@ -100,7 +96,6 @@ Gallery = function(apiLocation, apiKey, apiSecret) {
 	}
 	return async_wraper()
     }
-
 
 
     // @desc          Downloads workflow from Alteryx server param is workflow identifier on server
@@ -158,6 +153,10 @@ Gallery = function(apiLocation, apiKey, apiSecret) {
 	}).catch(error => console.log(error))
     }
 
+
+    // @desc          Will post workflow to target server, does not validate workflow, public = false, worker tag = 0
+    // @author        AJB
+    // @created_date  2021_10_05
     this.postWorkflowToTarget = function(download_response){
 	const sourceId = download_response[2] // position 2 will always have the sourceId
 	const filename = download_response[1].headers['content-disposition'].match(/\".+?\"/g)[0].replace('"','').replace('"','')
@@ -183,11 +182,11 @@ Gallery = function(apiLocation, apiKey, apiSecret) {
 	    recurce_count += 1
 	}
 	
-	console.log('====postWorkflowToProd local vars====\n',
-		    `type= ${type}\n`,
-		    `url= ${url}\n`,
-		    `params= ${JSON.stringify(params)}\n`,
-		    '==================\n')
+	//console.log('====postWorkflowToTarget local vars====\n',
+	//	    `type= ${type}\n`,
+	//	    `url= ${url}\n`,
+	//	    `params= ${JSON.stringify(params)}\n`,
+	//	    '==================\n')
 
 	let config = {
 	    method: type,
@@ -221,7 +220,7 @@ Gallery = function(apiLocation, apiKey, apiSecret) {
 
 
     let generateSignature = function(httpMethod, url, parameters, secret) {
-	return oauthSignature.generate(httpMethod, url, parameters, secret, null)//, { encodeSignature: false})
+	return oauthSignature.generate(httpMethod, url, parameters, secret, null)
     };
 };
 
@@ -293,4 +292,4 @@ router.post('/run_workflow/:app_id', (req, res)=> {
 module.exports = router
 
 
-//Simplified Oauth 2.0 Tutorial - Example with Node.js
+
