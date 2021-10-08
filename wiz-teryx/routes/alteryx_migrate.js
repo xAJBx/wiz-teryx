@@ -5,6 +5,7 @@ const axios = require('axios');
 const secrets = require("../secrets/secrets")
 const fs = require('fs')
 const FormData = require('form-data')
+const util = require('util')
 
 
 Gallery = function(apiLocation, apiKey, apiSecret) {
@@ -162,10 +163,10 @@ Gallery = function(apiLocation, apiKey, apiSecret) {
 	const filename = download_response[1].headers['content-disposition'].match(/\".+?\"/g)[0].replace('"','').replace('"','')
 	
 	var data = new FormData();
-	data.append('file', fs.createReadStream(`${secrets.app_server_details.root}/migration_stage/file.yxzp`))
+	data.append('file', fs.createReadStream(`${secrets.app_server_details.root}/migration_stage/file.yxzp`))//${filename}`))
 	data.append('name', filename)
 	data.append('owner', secrets.alteryx_servers_details.prod.admin_email)
-	data.append('validate', 'false')
+	data.append('validate', 'true')
 	data.append('isPublic', 'false')
 	data.append('sourceId', sourceId)
 	data.append('workerTag', '')
@@ -198,6 +199,8 @@ Gallery = function(apiLocation, apiKey, apiSecret) {
 	    data : data
 	};
 
+
+	//console.log(config)
 	return axios(config)
 	    .then(function (response) {
 		return response.data
@@ -207,6 +210,9 @@ Gallery = function(apiLocation, apiKey, apiSecret) {
 	    });	
     }
 
+    
+
+    
 
     let buildOauthParams = function(apiKey){
 	return {
@@ -223,6 +229,38 @@ Gallery = function(apiLocation, apiKey, apiSecret) {
 	return oauthSignature.generate(httpMethod, url, parameters, secret, null)
     };
 };
+
+
+
+
+function callRun_py(download_response){
+	let data = JSON.stringify({"script":"alteryx_workflow_fileshare_migration.py","args":`${secrets.alteryx_servers_details.dev.hostname};${secrets.alteryx_servers_details.prod.hostname}`});
+    
+	let config = {
+	    method: 'get',
+	    url: `http://localhost:${secrets.app_server_details.port}/run_py`,
+	    headers: { 
+		'Content-Type': 'application/json'
+	    },
+	    data : data
+	};
+console.log(data)
+    let re = axios(config)
+	    .then(function (response) {
+		console.log(JSON.stringify(response.data));
+		return response
+	    })
+	    .catch(function (error) {
+		console.log(error);
+		return error
+	    });
+
+	
+
+    let ans = download_response.push(re)
+    //console.log(download_response)
+    return re
+}
 
 
 // @route GET /alteryx_migrate/:target_destination
@@ -246,23 +284,29 @@ router.get('/:target_hostname', (req, res)=> {
     admin_dev_gallery.getMigratableWorkflows().then(ans=>{
 	// 2. loop through arrayed return
 	ans.forEach(element => {
+	    //console.log(element)
 	    // 3. download yxzp to root migration_stage dirrectory
 	    admin_dev_gallery.getDownloadMigratableWorkflows(element.id).then(response =>{
 		//3.1 extract workflow out and change dataconnections
-		
-		//4. upload to Target server
-		if(target === secrets.alteryx_servers_details.prod.hostname){
-		    admin_prod_gallery.postWorkflowToTarget(response).then(resa => {
-			console.log(resa)
-			res.json({'sourceId': resa})			
-		    }).catch(err => console.log(err))
-		}else{
-		admin_dev_gallery.postWorkflowToTarget(response).then(resa => {
-		    console.log(resa)
-		    res.json({'sourceId': resa})
-		}).catch(err => console.log(err))}
+		const data_for_post = response
+		callRun_py(response).then(response =>{
+		    //4. upload to Target server
+		    setTimeout(function(){
+			if(target === secrets.alteryx_servers_details.prod.hostname){
+			    admin_prod_gallery.postWorkflowToTarget(data_for_post).then(resa => {
+				//console.log(resa)
+				res.json({'sourceId': resa})			
+			    }).catch(err => console.log(err))
+			}else{
+			    admin_dev_gallery.postWorkflowToTarget(data_for_post).then(resa => {
+				//console.log(resa)
+				res.json({'sourceId': resa})
+			    }).catch(err => console.log(err))
+			}
+		    }, 15000)
+		}).catch(err => console.log(err))
 		//res.send(response[0].status)	
-	    }).catch(error => console.log(error))
+	    }).catch(error => console.log(error)) 
 	})
     })
 })
