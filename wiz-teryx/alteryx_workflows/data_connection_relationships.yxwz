@@ -3,7 +3,7 @@
   <Nodes>
     <Node ToolID="1">
       <GuiSettings Plugin="AlteryxBasePluginsGui.TextInput.TextInput">
-        <Position x="54" y="354" />
+        <Position x="18" y="354" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -35,7 +35,7 @@
     </Node>
     <Node ToolID="2">
       <GuiSettings Plugin="AlteryxBasePluginsGui.Formula.Formula">
-        <Position x="234" y="354" />
+        <Position x="150" y="354" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -73,7 +73,7 @@
     </Node>
     <Node ToolID="4">
       <GuiSettings Plugin="AlteryxGuiToolkit.Questions.DropDownListBox.DropDown">
-        <Position x="294" y="54" width="59" height="59" />
+        <Position x="150" y="174" width="59" height="59" />
       </GuiSettings>
       <Properties>
         <Configuration />
@@ -89,7 +89,7 @@
     </Node>
     <Node ToolID="5">
       <GuiSettings Plugin="AlteryxGuiToolkit.Action.Action">
-        <Position x="306" y="168" width="59" height="59" />
+        <Position x="162" y="282" width="59" height="59" />
       </GuiSettings>
       <Properties>
         <Configuration />
@@ -102,7 +102,7 @@
     </Node>
     <Node ToolID="6">
       <GuiSettings Plugin="PortfolioPluginsGui.ComposerTable.PortfolioComposerTable">
-        <Position x="1086" y="558" />
+        <Position x="990" y="498" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -147,7 +147,7 @@
     </Node>
     <Node ToolID="7">
       <GuiSettings Plugin="PortfolioPluginsGui.ComposerRender.PortfolioComposerRender">
-        <Position x="1158" y="558" />
+        <Position x="1062" y="498" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -180,7 +180,7 @@
     </Node>
     <Node ToolID="8">
       <GuiSettings Plugin="AlteryxBasePluginsGui.Formula.Formula">
-        <Position x="462" y="366" />
+        <Position x="342" y="366" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -206,7 +206,7 @@
     </Node>
     <Node ToolID="9">
       <GuiSettings Plugin="AlteryxGuiToolkit.Questions.DropDownListBox.DropDown">
-        <Position x="534" y="66" width="59" height="59" />
+        <Position x="342" y="174" width="59" height="59" />
       </GuiSettings>
       <Properties>
         <Configuration />
@@ -222,7 +222,7 @@
     </Node>
     <Node ToolID="10">
       <GuiSettings Plugin="AlteryxGuiToolkit.Action.Action">
-        <Position x="498" y="210" width="59" height="59" />
+        <Position x="354" y="282" width="59" height="59" />
       </GuiSettings>
       <Properties>
         <Configuration />
@@ -235,7 +235,7 @@
     </Node>
     <Node ToolID="11">
       <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
-        <Position x="138" y="354" />
+        <Position x="78" y="354" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -263,7 +263,7 @@
     </Node>
     <Node ToolID="12">
       <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
-        <Position x="126" y="510" />
+        <Position x="18" y="510" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -299,7 +299,7 @@
     </Node>
     <Node ToolID="13">
       <GuiSettings Plugin="AlteryxBasePluginsGui.Join.Join">
-        <Position x="354" y="366" />
+        <Position x="282" y="366" />
       </GuiSettings>
       <Properties>
         <Configuration joinByRecordPos="False">
@@ -355,7 +355,7 @@
     </Node>
     <Node ToolID="14">
       <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
-        <Position x="210" y="510" />
+        <Position x="78" y="510" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -383,7 +383,7 @@
     </Node>
     <Node ToolID="15">
       <GuiSettings Plugin="AlteryxBasePluginsGui.Join.Join">
-        <Position x="666" y="378" />
+        <Position x="498" y="378" />
       </GuiSettings>
       <Properties>
         <Configuration joinByRecordPos="False">
@@ -442,7 +442,7 @@
     </Node>
     <Node ToolID="16">
       <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
-        <Position x="474" y="510" />
+        <Position x="282" y="510" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -478,7 +478,7 @@
     </Node>
     <Node ToolID="17">
       <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
-        <Position x="570" y="510" />
+        <Position x="342" y="510" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -506,7 +506,7 @@
     </Node>
     <Node ToolID="18">
       <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileOutput.DbFileOutput">
-        <Position x="1134" y="378" />
+        <Position x="1062" y="366" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -532,7 +532,7 @@
     </Node>
     <Node ToolID="20">
       <GuiSettings Plugin="AlteryxBasePluginsGui.Union.Union">
-        <Position x="858" y="378" />
+        <Position x="690" y="378" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -559,7 +559,7 @@
     </Node>
     <Node ToolID="21">
       <GuiSettings Plugin="AlteryxBasePluginsGui.Unique.Unique">
-        <Position x="966" y="378" />
+        <Position x="798" y="378" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -608,7 +608,7 @@
     </Node>
     <Node ToolID="22">
       <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileInput.DbFileInput">
-        <Position x="762" y="510" />
+        <Position x="498" y="510" />
       </GuiSettings>
       <Properties>
         <Configuration>
@@ -685,7 +685,7 @@
     </Node>
     <Node ToolID="25">
       <GuiSettings Plugin="AlteryxGuiToolkit.TextBox.TextBox">
-        <Position x="834" y="318" width="336" height="40" />
+        <Position x="666" y="318" width="336" height="40" />
       </GuiSettings>
       <Properties>
         <Configuration>

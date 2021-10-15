@@ -13,6 +13,47 @@ Gallery = function(apiLocation, apiKey, apiSecret) {
     this.apiSecret = apiSecret;
     this.apiLocation = apiLocation;
 
+    // @desc          toggles migration flag on source server
+    // @author        AJB
+    // @created_date  2021_10_15
+    this.toggleMigrationFlag = async function (appid){
+	let type = "PUT"
+	let url = `${this.apiLocation}/workflows/migratable/${appid}/`
+	let params = buildOauthParams(this.apiKey)
+	params.oauth_signature = generateSignature(type, url, params, this.apiSecret)
+
+	let recurce_count = 0
+	while(params.oauth_signature.includes('+') && recurce_count < 100){
+	    params.oauth_signature = generateSignature(type, url, params, this.apiSecret)
+	    recurce_count += 1
+	}
+
+	console.log('====toggleMigrationFlag local vars====\n',
+		    `type= ${type}\n`,
+		    `url= ${url}\n`,
+		    `params= ${JSON.stringify(params)}\n`,
+	          '==================\n')
+
+	let config = {
+	    method: type,
+	    url: url,
+	    headers: {
+		'Authorization': `OAuth oauth_consumer_key="${params.oauth_consumer_key}",oauth_signature_method="${params.oauth_signature_method}",oauth_signature="${params.oauth_signature}",oauth_timestamp="${params.oauth_timestamp}",oauth_nonce="${params.oauth_nonce}"`
+	    }
+	};
+	
+	function async_wraper (){
+	    return axios(config)
+		.then(function (response) {
+		    return response //.data
+		})
+		.catch(function (error) {
+		    return error
+		});
+	}
+	return await async_wraper()
+    }
+
     // @desc          runs designated workflow by ap id passed in the header
     // @author        AJB
     // @created_date  2021_09_30
@@ -233,40 +274,45 @@ Gallery = function(apiLocation, apiKey, apiSecret) {
 
 
 
-function callRun_py(download_response){
-	let data = JSON.stringify({"script":"alteryx_workflow_fileshare_migration.py","args":`${secrets.alteryx_servers_details.dev.hostname};${secrets.alteryx_servers_details.prod.hostname}`});
+async function callRun_py(download_response){
+    let data = JSON.stringify({"script":"alteryx_workflow_fileshare_migration.py","args":`${secrets.alteryx_servers_details.dev.hostname};${secrets.alteryx_servers_details.prod.hostname}`});
+
+
+    let end_function = false
     
-	let config = {
-	    method: 'get',
-	    url: `http://localhost:${secrets.app_server_details.port}/run_py`,
-	    headers: { 
-		'Content-Type': 'application/json'
-	    },
-	    data : data
-	};
-console.log(data)
-    let re = axios(config)
-	    .then(function (response) {
-		console.log(JSON.stringify(response.data));
-		return response
-	    })
-	    .catch(function (error) {
-		console.log(error);
-		return error
-	    });
+    console.log('here')
+    
 
-	
-
-    let ans = download_response.push(re)
-    //console.log(download_response)
-    return re
+    
+    let config = {
+	method: 'get',
+	url: `http://localhost:${secrets.app_server_details.port}/run_py`,
+	headers: { 
+	    'Content-Type': 'application/json'
+	},
+	data : data
+    };
+    //console.log(data)
+    let re = await axios(config)
+	.then(function (response) {
+	    //console.log(JSON.stringify(response.data));
+	    return response
+	})
+	.catch(function (error) {
+	    console.log(error);
+	    return error
+	});
+       
+    download_response.push(re)
+    return await re
 }
 
 
 // @route GET /alteryx_migrate/:target_destination
 // @desc migrates flagged alteryx workflows on dev to target destination
 // @access Admin Key/Secret
-router.get('/:target_hostname', (req, res)=> {
+router.get('/:target_hostname', async (req, res)=> {
+    try{
     console.log('in alteryx_migrate!')
     target = req.params.target_hostname
     
@@ -279,37 +325,75 @@ router.get('/:target_hostname', (req, res)=> {
 					 secrets.alteryx_servers_details.prod.api_credintials.admin.key,
 					 secrets.alteryx_servers_details.prod.api_credintials.admin.secret)
     }
-    
-    // 1. get workflows that are migratable
-    admin_dev_gallery.getMigratableWorkflows().then(ans=>{
-	// 2. loop through arrayed return
-	ans.forEach(element => {
-	    //console.log(element)
-	    // 3. download yxzp to root migration_stage dirrectory
-	    admin_dev_gallery.getDownloadMigratableWorkflows(element.id).then(response =>{
+    async function main(admin_dev_gallery){
+	let prod_workflowIds = await {'ids': []}
+	try{
+	    // 1. get workflows that are migratable
+	    let workflow_obj_array = await admin_dev_gallery.getMigratableWorkflows()
+	    // 2. loop through arrayed return
+	    // no workflows to migrate condition
+	    if (workflow_obj_array.length === 0){
+		return 'no workflows to migrate'
+	    }
+	    for (i = 0; i < workflow_obj_array.length; i++){
+		let downloaded_workflow = await admin_dev_gallery.getDownloadMigratableWorkflows(workflow_obj_array[i].id)
+		let py_script_complete = await callRun_py(downloaded_workflow)
+		// 3. push to prod
+		let prod_workflowId = await admin_prod_gallery.postWorkflowToTarget(downloaded_workflow) 
+		console.log(prod_workflowId)
+		prod_workflowIds['ids'].push(prod_workflowId)
+		// 4. toggle migration flag on source server
+		let toggle_data = await admin_dev_gallery.toggleMigrationFlag(workflow_obj_array[i].id)
+	    }
+	}catch(err){
+		console.log(err)
+	}
+	return prod_workflowIds			   
+    }
+	const data = await main(admin_dev_gallery)
+	res.send(data)
+    }catch(err){
+	console.log(err)
+	res.send('server err')
+    }
+})
+//})
+
+
+
+
+/*
+admin_dev_gallery.getDownloadMigratableWorkflows(ans[i]).then(response =>{ //element.id to ans[i]
 		//3.1 extract workflow out and change dataconnections
 		const data_for_post = response
 		callRun_py(response).then(response =>{
 		    //4. upload to Target server
-		    setTimeout(function(){
 			if(target === secrets.alteryx_servers_details.prod.hostname){
 			    admin_prod_gallery.postWorkflowToTarget(data_for_post).then(resa => {
-				//console.log(resa)
-				res.json({'sourceId': resa})			
+				source_Ids.push(resa)
+				if(ans.length === source_Ids.length){
+				    res.json({'source_Ids': source_Ids})
+				}
 			    }).catch(err => console.log(err))
 			}else{
 			    admin_dev_gallery.postWorkflowToTarget(data_for_post).then(resa => {
-				//console.log(resa)
-				res.json({'sourceId': resa})
+				source_Ids.push(resa)
+				if(ans.length === source_Ids.length){
+				    res.json({'source_Ids': source_Ids})
+				}
 			    }).catch(err => console.log(err))
 			}
-		    }, 15000)
 		}).catch(err => console.log(err))
-		//res.send(response[0].status)	
-	    }).catch(error => console.log(error)) 
-	})
-    })
-})
+	    }).catch(error => console.log(error))
+
+*/
+
+
+
+
+
+
+
 
 
 // @route  POST /alteryx_migrate/runworkflow/:app_id
