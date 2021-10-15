@@ -357,43 +357,6 @@ router.get('/:target_hostname', async (req, res)=> {
 	res.send('server err')
     }
 })
-//})
-
-
-
-
-/*
-admin_dev_gallery.getDownloadMigratableWorkflows(ans[i]).then(response =>{ //element.id to ans[i]
-		//3.1 extract workflow out and change dataconnections
-		const data_for_post = response
-		callRun_py(response).then(response =>{
-		    //4. upload to Target server
-			if(target === secrets.alteryx_servers_details.prod.hostname){
-			    admin_prod_gallery.postWorkflowToTarget(data_for_post).then(resa => {
-				source_Ids.push(resa)
-				if(ans.length === source_Ids.length){
-				    res.json({'source_Ids': source_Ids})
-				}
-			    }).catch(err => console.log(err))
-			}else{
-			    admin_dev_gallery.postWorkflowToTarget(data_for_post).then(resa => {
-				source_Ids.push(resa)
-				if(ans.length === source_Ids.length){
-				    res.json({'source_Ids': source_Ids})
-				}
-			    }).catch(err => console.log(err))
-			}
-		}).catch(err => console.log(err))
-	    }).catch(error => console.log(error))
-
-*/
-
-
-
-
-
-
-
 
 
 // @route  POST /alteryx_migrate/runworkflow/:app_id
